@@ -7,10 +7,11 @@ three parameters as start, stop and step key respectively,
 function also allows to accept a dictionary
 to replace default letters for tranliteration
 '''
+import string
 
 
 def letters_range(start='a', stop='z', step=1, **args):
-    letters = 'abcdefghijklmnopqrstuvwxyz'
+    letters = string.ascii_lowercase
     if stop == 'z':
         stop, start = start, 'a'
     start_index = letters.find(start.lower())
