@@ -38,3 +38,14 @@ class Student:
             return Homework
         else:
             print("You're late")
+
+
+class Teacher:
+    # creates homeworks
+    def __init__(self, last_name, first_name):
+        self.last_name = last_name
+        self.first_name = first_name
+
+    @staticmethod
+    def create_homework(text, num_days):
+        return Homework(text, num_days)
