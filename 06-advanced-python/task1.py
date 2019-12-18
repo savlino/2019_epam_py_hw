@@ -18,7 +18,7 @@ class Graph:
             raise StopIteration
         curr = self.unvisited.pop(0)
         if curr not in self.nodes:
-                self.nodes.append(curr)
+            self.nodes.append(curr)
         for t in self.E[curr]:
             if t not in self.nodes:
                 self.nodes.append(t)
