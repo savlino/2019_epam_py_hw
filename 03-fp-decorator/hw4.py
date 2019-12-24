@@ -1,17 +1,19 @@
-'''applydecorator wraps decorating function'''
+"""
+applydecorator turns decorated function to wrapper
+"""
 
 
 def applydecorator(*args):
     def wrapper(func, *args):
         def inner(*func_args):
             return func_args
+        print(func.__name__)
         return inner
     return wrapper
 
 
 @applydecorator
 def saymyname(f, *args, **kwargs):
-    print('Name is', f.__name__)
     return f(*args, **kwargs)
 
 

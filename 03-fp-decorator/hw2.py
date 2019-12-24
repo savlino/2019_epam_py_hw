@@ -1,3 +1,8 @@
+"""
+function is_armstrong allows to check if the given number
+is one of Armstrong(narcissistic) numbers
+"""
+
 import functools
 
 
@@ -8,5 +13,5 @@ def is_armstrong(int_number):
     return int_number == dig_sum
 
 
-assert is_armstrong(153) == True, 'Armstrong number'
-assert is_armstrong(10) == False, 'not an Armstrong number'
+assert if is_armstrong(153) is True, 'Armstrong number'
+assert if is_armstrong(10) is False, 'not an Armstrong number'

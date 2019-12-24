@@ -1,10 +1,13 @@
-'''function accepts integer and returns number of iteration
-to descend through Syracuse sequence down to 1'''
+"""
+function accepts integer and returns number of iteration
+to descend through Syracuse sequence down to 1
+"""
 
 
 def collatz_steps(number):
     assert type(number) == int, 'shoud be integer'
     assert number >= 0, 'shoud be positive'
+    
     def loop(cntr, n):
         if n == 1:
             return cntr
