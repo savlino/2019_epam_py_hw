@@ -1,12 +1,15 @@
+"""
+decorator that saves __name__, __doc__ from decorated function
+and decorated function itself
+"""
 import functools
 
 
 def save_info(inner):
     def super_wrap(wrap_func):
         def wrapped(*args, **kwargs):
-            wrapped.__name__ = "custom_sum"
-            wrapped.__doc__ = \
-                """This function can sum any objects which have __add___"""
+            wrapped.__name__ = inner.__name__
+            wrapped.__doc__ = inner.__doc__
             wrapped.__original_func = inner
             return wrap_func(*args, **kwargs)
         return wrapped
@@ -27,3 +30,13 @@ def print_result(func):
 def custom_sum(*args):
     """This function can sum any objects which have __add___"""
     return functools.reduce(lambda x, y: x + y, args)
+
+
+if __name__ == '__main__':
+    custom_sum([1, 2, 3], [4, 5])
+    custom_sum(1, 2, 3, 4)
+    print(custom_sum.__doc__)
+    print(custom_sum.__name__)
+    without_print = custom_sum.__original_func
+    # the result returns without printing
+    without_print(1, 2, 3, 4)
