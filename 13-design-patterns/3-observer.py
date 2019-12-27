@@ -41,7 +41,7 @@ class YoutubeChannel:
                 sub.update(message)
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     matt = MyTubeUser('Matt')
     john = MyTubeUser('John')
     erica = MyTubeUser('Erica')

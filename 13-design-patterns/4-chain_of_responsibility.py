@@ -9,7 +9,7 @@ class AvailChecker(ABC):
     def set_next(self, handler):
         pass
 
-    def check(self, list):
+    def check(self, checklist):
         pass
 
 
@@ -21,58 +21,58 @@ class AbstractChecker(AvailChecker):
         return handler
 
     @abstractmethod
-    def check(self, list):
+    def check(self, checklist):
         if self._next_handler:
-            return self._next_handler.check(list)
+            return self._next_handler.check(checklist)
         return None
 
 
 class EggsCheck(AbstractChecker):
-    def check(self, list):
-        if list['eggs'] >= fridge['eggs']:
+    def check(self, checklist):
+        if checklist['eggs'] > fridge['eggs']:
             print("need more eggs")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 class FlourCheck(AbstractChecker):
-    def check(self, list):
-        if list['flour'] >= fridge['flour']:
+    def check(self, checklist):
+        if checklist['flour'] > fridge['flour']:
             print("need more flour")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 class MilkCheck(AbstractChecker):
-    def check(self, list):
-        if list['milk'] >= fridge['milk']:
+    def check(self, checklist):
+        if checklist['milk'] > fridge['milk']:
             print("need more milk")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 class SugarCheck(AbstractChecker):
-    def check(self, list):
-        if list['sugar'] >= fridge['sugar']:
+    def check(self, checklist):
+        if checklist['sugar'] > fridge['sugar']:
             print("need more sugar")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 class OilCheck(AbstractChecker):
-    def check(self, list):
-        if list['oil'] >= fridge['oil']:
+    def check(self, checklist):
+        if checklist['oil'] > fridge['oil']:
             print("need more oil")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 class ButterCheck(AbstractChecker):
-    def check(self, list):
-        if list['butter'] >= fridge['butter']:
+    def check(self, checklist):
+        if checklist['butter'] > fridge['butter']:
             print("need more butter")
         if self._next_handler:
-            return super().check(list)
+            return super().check(checklist)
 
 
 fridge = {
@@ -95,7 +95,7 @@ ingridients_list = {
 }
 
 
-def check_ingridients(list):
+def check_ingridients(checklist):
     is_enough_eggs = EggsCheck()
     is_enough_flour = FlourCheck()
     is_enough_milk = MilkCheck()
@@ -115,7 +115,7 @@ def check_ingridients(list):
         is_enough_butter
     )
 
-    is_enough_eggs.check(list)
+    is_enough_eggs.check(checklist)
 
 
 check_ingridients(ingridients_list)

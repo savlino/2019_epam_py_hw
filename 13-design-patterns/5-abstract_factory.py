@@ -88,3 +88,16 @@ class ChineseMenu(AbstractMenu):
 
     def serve_drink(self):
         return Drink(self.menu)
+
+
+if __name__ == '__main__':
+    customer1 = VeganMenu()
+    customer2 = ChildMenu()
+    customer3 = ChineseMenu()
+
+    # returns first course from current day's vegeterian menu
+    customer1.serve_first_course()
+    # returns second course from current day's kids menu
+    customer2.serve_second_course()
+    # returns drink from current day's chinese menu
+    customer3.serve_drink()
