@@ -1,4 +1,5 @@
-""" appends JSON wine records from given data, formats and sort'em,
+"""
+appends JSON wine records from given data, formats and sort'em,
 output is JSON file, contains summary information by built-in parameters
 """
 
@@ -111,10 +112,12 @@ def most_expensive_wine(w_data):
     max_price = w_data[0]['price']
     most_expensive_arr = []
     for r in w_data:
-        if r['price'] >= max_price:
+        if r['price'] == max_price:
             most_expensive_arr.append(r)
         else:
             break
+    print(max_price)
+    print(w_data[0]['price'])
     return most_expensive_arr
 
 
@@ -277,5 +280,5 @@ extr_str = """{{"statistics": {{
         }}
 }}""".format(**extr_data)
 
-with open('./stats.json', 'a') as ex:
-    ex.write(extr_str)
+# with open('./stats.json', 'a') as ex:
+#     ex.write(extr_str)

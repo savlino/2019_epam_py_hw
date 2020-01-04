@@ -21,13 +21,13 @@ def make_codons_dict():
 
 def count_nucleotides(dna):
     # accepts stripped DNA string and returns nucleotides chart as string
-    A_count = dna.count('A')
-    C_count = dna.count('C')
-    G_count = dna.count('G')
-    T_count = dna.count('T')
-    num_of_nucleotides = f"""[A - {A_count}, C - {C_count}, G - {G_count},\
- T - {T_count}]"""
-    plotter(A_count, C_count, G_count, T_count)
+    a_count = dna.count('A')
+    c_count = dna.count('C')
+    g_count = dna.count('G')
+    t_count = dna.count('T')
+    num_of_nucleotides = f"""[A - {a_count}, C - {c_count}, G - {g_count},\
+ T - {t_count}]"""
+    plotter(a_count, c_count, g_count, t_count)
     return num_of_nucleotides
 
 
@@ -61,22 +61,22 @@ def plotter(a, b, c, d):
 
 
 make_codons_dict()
-DNA_words = {}
-DNA_temp = ''
+dna_words = {}
+dna_temp = ''
 
-with open("./dna.fasta") as DNA_input:
-    for line in DNA_input:
+with open("./dna.fasta") as dna_input:
+    for line in dna_input:
         if line.startswith('>'):
-            if DNA_temp != '':
-                DNA_words[dna_desc] = DNA_temp
-                DNA_temp = ''
+            if dna_temp != '':
+                dna_words[dna_desc] = dna_temp
+                dna_temp = ''
             dna_desc = line.strip('\r\n')[1:]
         else:
-            DNA_temp += line.strip('\r\n')
-    DNA_words[dna_desc] = DNA_temp
+            dna_temp += line.strip('\r\n')
+    dna_words[dna_desc] = dna_temp
 
-for DNA in DNA_words.items():
-    key, val = DNA
+for dna in dna_words.items():
+    key, val = dna
     with open('./nucleotides_count.txt', 'a') as nc:
         nc.write(f'{key}: {count_nucleotides(val)}\n')
     with open('./rna_transcripted.txt', 'a') as rna:
