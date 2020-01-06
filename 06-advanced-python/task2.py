@@ -5,11 +5,11 @@ import numpy as np
 
 
 class Quaternion:
-    def __init__(self, matrix):
-        self.a = matrix[0]
-        self.i = matrix[1]
-        self.j = matrix[2]
-        self.k = matrix[3]
+    def __init__(self, quartet):
+        self.a = quartet[0]
+        self.i = quartet[1]
+        self.j = quartet[2]
+        self.k = quartet[3]
         self.scal = self.a
         self.vect = np.array([self.i, self.j, self.k])
 
