@@ -1,74 +1,72 @@
 """
-calculates amount of time to deliver container from factory according give list
+calculates amount of time required
+to deliver list of containers over graph of destination points
+according to given transport, destinations and distances
 """
 
+
 class Transport:
-    def __init__(self, location):
+    """abstract transport class"""
+    def __init__(self, location, distances):
+        self.distances = distances
         self.location = location
         self.oper_time = 0
 
     def travel(self, trav_time):
         self.oper_time += trav_time
 
-
-class Truck(Transport):
-    def __init__(self, location, dest_list):
-        self.destinations = dest_list
-        super().__init__(location)
-
     def deliver(self, destination):
         self.location = destination
-        self.oper_time += points_distances[destination]
+        self.oper_time += self.distances[destination]
 
     def way_back(self, back_from):
-        self.location = 'factory'
-        self.oper_time += points_distances[back_from]
+        self.location = self.init_location
+        self.oper_time += self.distances[back_from]
+
+
+class Truck(Transport):
+    """creates truck instances with given
+    initial location and available delivery points"""
+    def __init__(self, location, dest_list):
+        self.init_location = 'factory'
+        super().__init__(location, dest_list)
 
 
 class Ship(Transport):
+    """creates ship instances with given
+    initial location and available delivery points"""
     def __init__(self, location, dest_list):
-        self.destinations = dest_list
-        super().__init__(location)
-
-    def deliver(self, destination):
-        self.location = destination
-        self.oper_time += points_distances[destination]
-
-    def way_back(self, back_from):
-        self.location = 'port'
-        self.oper_time += points_distances[back_from]
-
-
-points_distances = {
-    'A': 4,
-    'port': 1,
-    'B': 5
-}
-
-
-def est_count(this, remain_list, transport_arr):    
-    trucks = []
-
-    for i in transport_arr:
-        if isinstance(i, Truck):
-            trucks.append(i.location)
-
-    for c in set(remain_list):
-        est_time = remain_list.count(c) \
-                    * points_distances[c] \
-                    * (len(trucks) - 1)
-        if est_time > points_distances[this]:
-            return True
-
-    return False
+        self.init_location = 'port'
+        super().__init__(location, dest_list)
 
 
 class Deliver:
-    def __init__(self, transport):
-        self.transport = transport
+    """create instance of current situation, which includes transport,
+    sources of containers, destinations and distances"""
+    def __init__(self, given_transport, deliv_string, distances):
+        self.transport = given_transport
+        self.deliv_string = deliv_string
+        self.distances = distances
 
-    def calculate_time(self, deliv_string):
-        to_deliver = [c for c in deliv_string]
+    def est_count(self, current, remain_list, transport_arr):
+        trucks = []
+
+        for i in transport_arr:
+            if isinstance(i, Truck):
+                trucks.append(i.location)
+
+        for c in set(remain_list):
+            if c not in self.distances:
+                raise LookupError('wrong destination given')
+            est_time = remain_list.count(c) \
+                * self.distances[c] \
+                * (len(trucks) - 1)
+            if est_time > self.distances[current]:
+                return True
+        return False
+
+    def calculate_time(self):
+        to_deliver = [c for c in self.deliv_string]
         for t in self.transport:
             t.oper_time = 0
             if isinstance(t, Truck):
@@ -84,6 +82,8 @@ class Deliver:
                     if t.location == 'factory':
                         if t.oper_time <= elaps_time:
                             curr = to_deliver.pop(0)
+                            if curr not in self.distances:
+                                raise LookupError('wrong destination given')
                             if curr == 'A':
                                 t.deliver('port')
                                 port_stack.append((curr, t.oper_time))
@@ -93,8 +93,10 @@ class Deliver:
                                 break
                     if t.location != 'factory' \
                         and len(to_deliver) > 0 \
-                        and est_count(t.location, to_deliver, self.transport):
-                        t.way_back(t.location)
+                            and self.est_count(
+                                t.location, to_deliver, self.transport
+                            ):
+                                t.way_back(t.location)
             elaps_time += 1
 
         while port_stack:
@@ -108,17 +110,51 @@ class Deliver:
                     elif len(port_stack) > 0:
                         s.way_back(s.location)
 
+        print(
+            f'list "{self.deliv_string}" will be delivered in \n\
+            {max([t.oper_time for t in self.transport])} hours'
+        )
         return max([t.oper_time for t in self.transport])
 
-truck1 = Truck('factory', ['port', 'B'])
-truck2 = Truck('factory', ['port', 'B'])
-boat = Ship('port', ['A'])
-deliv_pattern = Deliver([truck1, truck2, boat])
+
+class Calculator:
+    """allows to create transport situations and invoke calculation"""
+    def __init__(self, distances, num_trucks=0, num_ships=0):
+        if num_trucks == 0 and num_ships == 0:
+            raise ValueError("transport list is empty")
+        self.distances = distances
+        self.transport_creator({'trucks': num_trucks, 'ships': num_ships})
+
+    def transport_creator(self, transport):
+        full_transport = []
+        for tp in transport:
+            if tp == 'trucks':
+                for i in range(transport[tp]):
+                    full_transport.append(
+                        Truck('factory', {'port': 1, 'B': 5})
+                    )
+            elif tp == 'ships':
+                for i in range(transport[tp]):
+                    full_transport.append(
+                        Ship('port', {'A': 4})
+                    )
+            else:
+                raise AttributeError('wrong transport requested')
+
+        self.full_current_transport = full_transport
+
+    def process(self, delivery):
+        transp_graph_situation = Deliver(
+            self.full_current_transport, delivery, self.distances
+        )
+        return transp_graph_situation.calculate_time()
 
 
-assert deliv_pattern.calculate_time('A') == 5
-assert deliv_pattern.calculate_time('AB') == 5
-assert deliv_pattern.calculate_time('BB') == 5
-assert deliv_pattern.calculate_time('ABB') == 7
-deliv_pattern.calculate_time('AABABBAB')
-deliv_pattern.calculate_time('ABBBABAAABBB')
+calc = Calculator({'A': 4, 'port': 1, 'B': 5}, num_trucks=2, num_ships=1)
+
+assert calc.process('A') == 5
+assert calc.process('AB') == 5
+assert calc.process('BB') == 5
+assert calc.process('ABB') == 7
+calc.process('AABABBAB')
+calc.process('ABBBABAAABBB')
