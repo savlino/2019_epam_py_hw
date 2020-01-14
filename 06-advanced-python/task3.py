@@ -1,5 +1,5 @@
 """"
-class suppresses errors of a given class
+class suppresses errors of a given class(es)
 """
 
 
@@ -15,10 +15,9 @@ class Suppressor:
 
     def __exit__(self, *args):
         try:
-            if args[0] in self.errors_to_skip:
-                return True
-        except (self.error):
-            return False
+            return issubclass(args[0], tuple(self.errors_to_skip))
+        finally:
+            pass
 
 
 with Suppressor(ZeroDivisionError):
@@ -29,6 +28,10 @@ with Suppressor(IndexError):
     arr = [1]
     arr[4]
 print("That's still fine")
+
+with Suppressor(ArithmeticError, AttributeError):
+    1/0
+print("works now")
 
 with Suppressor(IndexError):
     1/0
