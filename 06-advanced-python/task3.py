@@ -5,19 +5,13 @@ class suppresses errors of a given class(es)
 
 class Suppressor:
     def __init__(self, *args):
-        self.errors_to_skip = []
-        for arg in args:
-            if issubclass(arg, BaseException):
-                self.errors_to_skip.append(arg)
+        self.errors_to_skip = [a for a in args]
 
     def __enter__(self):
         pass
 
     def __exit__(self, *args):
-        try:
-            return issubclass(args[0], tuple(self.errors_to_skip))
-        finally:
-            pass
+        return issubclass(args[0], tuple(self.errors_to_skip))
 
 
 with Suppressor(ZeroDivisionError):
