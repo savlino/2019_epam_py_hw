@@ -1,6 +1,7 @@
 """
 graphic output of folder tree, works only for subfolders
 """
+
 import os
 import os.path
 
@@ -8,7 +9,7 @@ root_depth = os.getcwd().count(os.sep)
 
 
 def path_finder(request_folder, check_path=None):
-    for root, dirs, files in os.walk(os.getcwd()):
+    for root, dirs, files in os.walk(check_path):
         for d in dirs:
             if d == request_folder:
                 return os.path.join(root, d)
@@ -22,20 +23,14 @@ class PrintableFolder:
 
     def __str__(self, level=0):
         print(f"{'|   ' * level}|-> V {self.name}")
-        curr_dirs = set()
-        curr_files = []
         for root, dirs, files in os.walk(self.abspath):
             level = root.replace(self.name, '').count(os.sep) - root_depth
-            if dirs == []:
-                for f in files:
-                    print(PrintableFile(f).__str__(level=level))
-            for d in dirs:
-                PrintableFolder(
-                    os.path.basename(d), search_path=root
-                ).__str__(level)
-                del dirs[dirs.index(d)]
-                for f in files:
-                    print(PrintableFile(f).__str__(level=level - 1))
+            while dirs:
+                d = dirs[0]
+                PrintableFolder(d, search_path=root).__str__(level)
+                dirs.remove(d)
+            for f in files:
+                print(PrintableFile(f).__str__(level=level))
         return ""
 
 
@@ -47,5 +42,5 @@ class PrintableFile:
         return f"{'|   ' * level}|-> {self.name}"
 
 
-folder2 = PrintableFolder('folder1')
-print(folder2)
+folder1 = PrintableFolder('folder1')
+print(folder1)
